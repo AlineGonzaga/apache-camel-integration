@@ -1,0 +1,122 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://www.alineservices.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.alineservices.com" targetNamespace="http://www.alineservices.com">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.alineservices.com">
+            <xs:element name="getOneRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="nome" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getOneResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Student" type="tns:Student"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="setOneRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Student" type="tns:Student"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="setOneResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Student" type="tns:Student"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteOneRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="nome" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteOneResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Student" type="tns:Student"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="Student">
+                <xs:sequence>
+                    <xs:element name="nome" type="xs:string"/>
+                    <xs:element name="idade" type="xs:int"/>
+                    <xs:element name="endereco" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="setOneRequest">
+        <wsdl:part element="tns:setOneRequest" name="setOneRequest"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getOneResponse">
+        <wsdl:part element="tns:getOneResponse" name="getOneResponse"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="deleteOneResponse">
+        <wsdl:part element="tns:deleteOneResponse" name="deleteOneResponse"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="deleteOneRequest">
+        <wsdl:part element="tns:deleteOneRequest" name="deleteOneRequest"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setOneResponse">
+        <wsdl:part element="tns:setOneResponse" name="setOneResponse"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getOneRequest">
+        <wsdl:part element="tns:getOneRequest" name="getOneRequest"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="StudentPort">
+        <wsdl:operation name="setOne">
+            <wsdl:input message="tns:setOneRequest" name="setOneRequest"> </wsdl:input>
+            <wsdl:output message="tns:setOneResponse" name="setOneResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getOne">
+            <wsdl:input message="tns:getOneRequest" name="getOneRequest"> </wsdl:input>
+            <wsdl:output message="tns:getOneResponse" name="getOneResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="deleteOne">
+            <wsdl:input message="tns:deleteOneRequest" name="deleteOneRequest"> </wsdl:input>
+            <wsdl:output message="tns:deleteOneResponse" name="deleteOneResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="StudentPortSoap11" type="tns:StudentPort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="setOne">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="setOneRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="setOneResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getOne">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="getOneRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getOneResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="deleteOne">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="deleteOneRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="deleteOneResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="StudentPortService">
+        <wsdl:port binding="tns:StudentPortSoap11" name="StudentPortSoap11">
+            <soap:address location="http://localhost:8080/servico-ws"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
