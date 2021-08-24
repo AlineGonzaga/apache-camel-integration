@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.alineservices.Student;
 import com.google.maps.model.GeocodingResult;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
@@ -45,9 +46,19 @@ public class MyCamelRouter  extends RouteBuilder {
                     .consumes("application/json")
                     .produces("application/json")
                     .param().name("nome").type(RestParamType.path).dataType("string").endParam()
+                    .to("direct:getOneRequest")
 
-                    .to("direct:getOneRequest");
+                    .delete("/{nome}")
+                    .consumes("application/json")
+                    .produces("application/json")
+                    .param().name("nome").type(RestParamType.path).dataType("string").endParam()
+                    .to("direct:deleteRequest")
 
-
+                    .post()
+                    .consumes("application/json")
+                    .produces("application/json")
+                    .type(Student.class).outType(Student.class)
+                    .to("direct:postRequest");
+            ;
     }
 }

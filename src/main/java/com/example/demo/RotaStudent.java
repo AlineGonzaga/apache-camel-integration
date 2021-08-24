@@ -1,8 +1,6 @@
 package com.example.demo;
 
-import com.alineservices.GetOneRequest;
-import com.alineservices.GetOneResponse;
-import com.alineservices.Student;
+import com.alineservices.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -36,16 +34,56 @@ public class RotaStudent extends RouteBuilder {
                     public void process(Exchange exchange) throws Exception {
                         MessageContentsList response = (MessageContentsList) exchange.getIn().getBody();
                         GetOneResponse r = (GetOneResponse) response.get(0);
-                        exchange.getIn().setBody(r.getStudent());
+                        exchange.getIn().setBody(r.getStudent().getEndereco());
+                    }
+                }).end();
 
+
+                from("direct:deleteRequest")
+                .removeHeaders("CamelHttp*")
+                .routeId("deleteRequest")
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        DeleteOneRequest c = new DeleteOneRequest();
+                        c.setNome(exchange.getIn().getHeader("nome").toString());
+                        exchange.getIn().setBody(c);
+                    }
+                })
+                .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.delete}}"))
+                .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("{{endpoint.namespace}}"))
+                .to("cxf:bean:cxfConvertTemp")
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        System.out.println("oioioi");
+                        System.out.println(exchange.getIn().getBody().toString());
                     }
                 })
                 .end();
 
-
-
-
-
+        from("direct:postRequest")
+                .removeHeaders("CamelHttp*")
+                .routeId("postRequest")
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        SetOneRequest c = new SetOneRequest();
+                        c.setStudent((Student) exchange.getIn().getBody());
+                        exchange.getIn().setBody(c);
+                    }
+                })
+                .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.post}}"))
+                .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("{{endpoint.namespace}}"))
+                .to("cxf:bean:cxfConvertTemp")
+                .process(new Processor() {
+                    @Override
+                    public void process(Exchange exchange) throws Exception {
+                        System.out.println("post");
+                        System.out.println(exchange.getIn().getBody().toString());
+                    }
+                })
+                .end();
     }
 
 }
