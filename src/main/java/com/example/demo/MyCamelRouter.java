@@ -43,8 +43,8 @@ public class MyCamelRouter  extends RouteBuilder {
 
             rest("student")
                     .get("/{nome}")
-                    .consumes("application/json")
-                    .produces("application/json")
+
+                    .produces(MediaType.APPLICATION_JSON_VALUE)
                     .param().name("nome").type(RestParamType.path).dataType("string").endParam()
                     .to("direct:getOneRequest")
 

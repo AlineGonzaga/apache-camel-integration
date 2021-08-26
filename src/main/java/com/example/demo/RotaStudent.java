@@ -17,26 +17,35 @@ public class RotaStudent extends RouteBuilder {
         from("direct:getOneRequest")
                 .removeHeaders("CamelHttp*")
                 .routeId("getOneRequest")
+
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
                         System.out.println("fkjhdkjfdutyrugdfiyhfiosd fysdjugy");
                         GetOneRequest c = new GetOneRequest();
                         c.setNome(exchange.getIn().getHeader("nome").toString());
-                        exchange.getIn().setBody(c);
+                        exchange.getMessage().setBody(c);
                     }
                 })
-                .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.fahrenheit.to.celsius}}"))
+
+
+                .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.get}}"))
                 .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("{{endpoint.namespace}}"))
                 .to("cxf:bean:cxfConvertTemp")
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        MessageContentsList response = (MessageContentsList) exchange.getIn().getBody();
+                        MessageContentsList response = (MessageContentsList) exchange.getMessage().getBody();
                         GetOneResponse r = (GetOneResponse) response.get(0);
-                        exchange.getIn().setBody(r.getStudent().getEndereco());
+                        exchange.getMessage().setBody(r.getStudent());
                     }
-                }).end();
+                })
+                .removeHeaders("CamelHttp*")
+                .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+                .marshal().json(JsonLibrary.Jackson, Student.class)
+                .log("${body}")
+                .end();
+
 
 
                 from("direct:deleteRequest")
