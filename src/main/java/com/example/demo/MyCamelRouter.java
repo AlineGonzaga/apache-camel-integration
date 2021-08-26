@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.alineservices.SetOneRequest;
+import com.alineservices.SetOneResponse;
 import com.alineservices.Student;
 import com.google.maps.model.GeocodingResult;
 import org.apache.camel.builder.RouteBuilder;
@@ -29,22 +31,11 @@ public class MyCamelRouter  extends RouteBuilder {
 //                .toD("geocoder:address:${header.address})");
 
 
-         //   restConfiguration().component("netty-http").host("localhost").port(9090).bindingMode(RestBindingMode.auto);
-
-//        restConfiguration()
-//                .component("undertow").host("0.0.0.0").port(9090).bindingMode(RestBindingMode.auto).scheme("http")
-//                .dataFormatProperty("prettyPrint", "true")
-//                .contextPath("/")
-//                .apiContextPath("/api-doc")
-//                .apiProperty("api.title", "Camel2Soap")
-//                .apiProperty("api.version", "1.0")
-//                .apiProperty("host","")
-//                .enableCORS(true);
+         //   restConfiguration().component("netty-http").host("localhostname").bindingMode(RestBindingMode.auto);
 
             rest("student")
                     .get("/{nome}")
-
-                    .produces(MediaType.APPLICATION_JSON_VALUE)
+                    .produces("application/json")
                     .param().name("nome").type(RestParamType.path).dataType("string").endParam()
                     .to("direct:getOneRequest")
 
@@ -56,7 +47,7 @@ public class MyCamelRouter  extends RouteBuilder {
 
                     .post()
                     .consumes("application/json")
-                    .produces("application/json")
+
                     .type(Student.class).outType(Student.class)
                     .to("direct:postRequest");
             ;

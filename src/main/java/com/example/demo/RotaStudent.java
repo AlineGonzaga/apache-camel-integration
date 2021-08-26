@@ -21,14 +21,11 @@ public class RotaStudent extends RouteBuilder {
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        System.out.println("fkjhdkjfdutyrugdfiyhfiosd fysdjugy");
                         GetOneRequest c = new GetOneRequest();
                         c.setNome(exchange.getIn().getHeader("nome").toString());
                         exchange.getMessage().setBody(c);
                     }
                 })
-
-
                 .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.get}}"))
                 .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("{{endpoint.namespace}}"))
                 .to("cxf:bean:cxfConvertTemp")
@@ -40,13 +37,16 @@ public class RotaStudent extends RouteBuilder {
                         exchange.getMessage().setBody(r.getStudent());
                     }
                 })
-                .removeHeaders("CamelHttp*")
-                .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+                //.removeHeaders("CamelHttp*")
+//                .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+//                .choice()
+//                    .when().simple("${body} == null")
+//                    .log("no one")
+//
+//                .otherwise()
                 .marshal().json(JsonLibrary.Jackson, Student.class)
                 .log("${body}")
                 .end();
-
-
 
                 from("direct:deleteRequest")
                 .removeHeaders("CamelHttp*")
@@ -59,13 +59,13 @@ public class RotaStudent extends RouteBuilder {
                         exchange.getIn().setBody(c);
                     }
                 })
+
                 .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.delete}}"))
                 .setHeader(CxfConstants.OPERATION_NAMESPACE, constant("{{endpoint.namespace}}"))
                 .to("cxf:bean:cxfConvertTemp")
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        System.out.println("oioioi");
                         System.out.println(exchange.getIn().getBody().toString());
                     }
                 })
@@ -78,8 +78,9 @@ public class RotaStudent extends RouteBuilder {
                     @Override
                     public void process(Exchange exchange) throws Exception {
                         SetOneRequest c = new SetOneRequest();
-                        c.setStudent((Student) exchange.getIn().getBody());
-                        exchange.getIn().setBody(c);
+                        Student s = exchange.getIn().getBody(Student.class);
+                        c.setStudent(s);
+                        exchange.getMessage().setBody(c);
                     }
                 })
                 .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.post}}"))
