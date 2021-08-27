@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import static org.apache.camel.model.rest.RestParamType.query;
+import static org.apache.camel.model.rest.RestParamType.body;
 
 @Component
 public class MyCamelRouter  extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        // rest-dsl is also configured in the application.properties file
+        // -> Rest-dsl is also configured in the application.properties file.
 
 //        rest("/geocoder").description("Geocoder REST service")
 //                .consumes("application/json")
@@ -34,21 +34,20 @@ public class MyCamelRouter  extends RouteBuilder {
          //   restConfiguration().component("netty-http").host("localhostname").bindingMode(RestBindingMode.auto);
 
             rest("student")
-                    .get("/{nome}")
+                    .consumes("application/json")
                     .produces("application/json")
+
+                    .get("/{nome}")
                     .param().name("nome").type(RestParamType.path).dataType("string").endParam()
                     .to("direct:getOneRequest")
 
                     .delete("/{nome}")
-                    .consumes("application/json")
-                    .produces("application/json")
                     .param().name("nome").type(RestParamType.path).dataType("string").endParam()
                     .to("direct:deleteRequest")
 
                     .post()
-                    .consumes("application/json")
-
-                    .type(Student.class).outType(Student.class)
+                    .type(SetOneRequest.class)
+                    .param().name("body").type(body).endParam()
                     .to("direct:postRequest");
             ;
     }

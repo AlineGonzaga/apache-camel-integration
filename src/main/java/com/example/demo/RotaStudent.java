@@ -34,17 +34,17 @@ public class RotaStudent extends RouteBuilder {
                     public void process(Exchange exchange) throws Exception {
                         MessageContentsList response = (MessageContentsList) exchange.getMessage().getBody();
                         GetOneResponse r = (GetOneResponse) response.get(0);
-                        exchange.getMessage().setBody(r.getStudent());
+                        exchange.getMessage().setBody(r);
                     }
                 })
-                //.removeHeaders("CamelHttp*")
+                .removeHeaders("CamelHttp*")
 //                .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
 //                .choice()
 //                    .when().simple("${body} == null")
 //                    .log("no one")
 //
 //                .otherwise()
-                .marshal().json(JsonLibrary.Jackson, Student.class)
+                .marshal().json(JsonLibrary.Jackson)
                 .log("${body}")
                 .end();
 
@@ -77,10 +77,12 @@ public class RotaStudent extends RouteBuilder {
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        SetOneRequest c = new SetOneRequest();
-                        Student s = exchange.getIn().getBody(Student.class);
-                        c.setStudent(s);
-                        exchange.getMessage().setBody(c);
+                        System.out.println("passou aqui?");
+                        //SetOneRequest c = new SetOneRequest();
+
+                     //   System.out.println();
+                      //  c.setStudent(s);
+                       // exchange.getMessage().setBody(null);
                     }
                 })
                 .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.post}}"))
@@ -90,7 +92,9 @@ public class RotaStudent extends RouteBuilder {
                     @Override
                     public void process(Exchange exchange) throws Exception {
                         System.out.println("post");
-                        System.out.println(exchange.getIn().getBody().toString());
+                        MessageContentsList response = (MessageContentsList) exchange.getMessage().getBody();
+                        SetOneResponse r = (SetOneResponse) response.get(0);
+                        exchange.getMessage().setBody(r.getStudent());
                     }
                 })
                 .end();
