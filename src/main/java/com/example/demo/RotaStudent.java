@@ -46,6 +46,8 @@ public class RotaStudent extends RouteBuilder {
 //                .otherwise()
                 .marshal().json(JsonLibrary.Jackson)
                 .log("${body}")
+                .filter(simple("${body} == null"))
+                .throwException(new IllegalArgumentException("it is empty!"))
                 .end();
 
                 from("direct:deleteRequest")
@@ -77,12 +79,11 @@ public class RotaStudent extends RouteBuilder {
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
-                        System.out.println("passou aqui?");
                         //SetOneRequest c = new SetOneRequest();
-
+                        SetOneRequest setOneRequest = (SetOneRequest) exchange.getMessage().getBody();
                      //   System.out.println();
                       //  c.setStudent(s);
-                       // exchange.getMessage().setBody(null);
+                        exchange.getMessage().setBody(setOneRequest);
                     }
                 })
                 .setHeader(CxfConstants.OPERATION_NAME, constant("{{endpoint.operation.post}}"))
